@@ -54,8 +54,13 @@ jobs:
       - name: build
         run: pnpm build
 
+      - name: create .npmrc
+        shell: bash
+        run: |
+            echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
       - name: publish NPM package
         run: pnpm publish --no-git-checks --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
