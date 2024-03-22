@@ -21,6 +21,12 @@ jobs:
       - name: configure npm to not create git tag
         run: npm config set git-tag-version false
 
+      - name: create .npmrc
+        shell: bash
+        run: |
+            echo "git-tag-version=false" >> .npmrc
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+
       - name: set tag into package.json
         run: npm version ${{ steps.tag_version.outputs.version }}
 
@@ -53,11 +59,6 @@ jobs:
 
       - name: build
         run: pnpm build
-
-      - name: create .npmrc
-        shell: bash
-        run: |
-            echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - name: publish NPM package
         run: pnpm publish --no-git-checks --access public
