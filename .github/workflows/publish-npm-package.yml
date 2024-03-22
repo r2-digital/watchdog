@@ -44,14 +44,6 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-pnpm-store-
 
-            # install dependencies in production context
-            -   name: install dependencies
-                run: pnpm install --frozen-lockfile
-
-            # build dist to use as package
-            -   name: build dist
-                run: pnpm build
-
             # get the release tag to use as package version
             -   uses: jannemattila/get-version-from-tag@v3
                 id: get_version
@@ -64,6 +56,14 @@ jobs:
                     npm version ${{ steps.get_version.outputs.version }}
                 env:
                     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            # install dependencies in production context
+            -   name: install dependencies
+                run: pnpm install --frozen-lockfile
+
+            # build dist to use as package
+            -   name: build dist
+                run: pnpm build
 
             # publish NPM package
             -   shell: bash
