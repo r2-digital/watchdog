@@ -1,6 +1,8 @@
-import { IAsyncDisposable } from '@watchdog/abstractions/IAsyncDisposable';
-import { IResourceDescriptor } from '@watchdog/abstractions/IResourceDescriptor';
-import { Activator } from '@watchdog/abstractions/Activator';
+import {
+    IAsyncDisposable,
+    IResourceDescriptor,
+    Activator,
+} from '@watchdog/abstractions';
 
 export class ResourceDescriptor<T extends IAsyncDisposable>
     implements IResourceDescriptor<T>

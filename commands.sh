@@ -58,7 +58,7 @@ execute_audit() {
 
 execute_build() {
     execute_clean
-    tsc -p "$TSCONFIG" && tsc-alias -p "$TSCONFIG"
+    tsc -p "$TSCONFIG_BUILD" && tsc-alias -p "$TSCONFIG_BUILD"
 }
 
 execute_clean_dist() {
