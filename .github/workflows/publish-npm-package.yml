@@ -54,15 +54,22 @@ jobs:
 
             # get the release tag to use as package version
             -   uses: jannemattila/get-version-from-tag@v3
-                id: NPM_TAG
+                id: get_version
                 name: get tag version to use as package version
+
+            # apply new version
+            -   shell: bash
+                name: publish NPM package
+                run: |
+                    npm version ${{ steps.get_version.outputs.version }}
+                env:
+                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             # publish NPM package
             -   shell: bash
                 name: publish NPM package
                 run: |
                     cd dist
-                    npm version ${{ steps.NPM_TAG.outputs.version }}
                     npm publish
                 env:
                     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
