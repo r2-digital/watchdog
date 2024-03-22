@@ -59,6 +59,8 @@ execute_audit() {
 execute_dist_preparation() {
     cp "${BASE_PATH}/.npmrc" "${DIST_PATH}"
     cp "${BASE_PATH}/package.json" "${DIST_PATH}"
+    cp "${BASE_PATH}/README.md" "${DIST_PATH}"
+    cp "${BASE_PATH}/LICENSE" "${DIST_PATH}"
     cd "${DIST_PATH}"
     npm pkg delete scripts
     npm pkg delete devDependencies
