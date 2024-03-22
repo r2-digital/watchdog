@@ -56,9 +56,7 @@ execute_audit() {
     pnpm audit --prod --audit-level="high"
 }
 
-execute_build() {
-    execute_clean
-    tsc -p "$TSCONFIG_BUILD" && tsc-alias -p "$TSCONFIG_BUILD"
+execute_dist_preparation() {
     cp "${BASE_PATH}/.npmrc" "${DIST_PATH}"
     cp "${BASE_PATH}/package.json" "${DIST_PATH}"
     cd "${DIST_PATH}"
@@ -66,6 +64,21 @@ execute_build() {
     npm pkg delete devDependencies
     npm pkg delete engines
     cd "${BASE_PATH}"
+}
+
+execute_complete_typedoc_generation() {
+    typedoc --plugin typedoc-plugin-missing-exports "$BASE_PATH/src"
+}
+
+execute_typedoc_generation() {
+    typedoc "$BASE_PATH/src"
+}
+
+execute_build() {
+    execute_clean
+    tsc -p "$TSCONFIG_BUILD" && tsc-alias -p "$TSCONFIG_BUILD"
+    execute_typedoc_generation
+    execute_dist_preparation
 }
 
 execute_clean_dist() {

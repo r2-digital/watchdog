@@ -9,11 +9,20 @@ import { ITerminationSignalHandler } from '@watchdog/diagnostics/abstractions';
 import { ILogger } from '@watchdog/logging/abstractions';
 import { ResourceDescriptor } from '@watchdog/ResourceDescriptor';
 
+/**
+ * @class
+ * Represents a resource monitor. Implements {@link IResourceMonitor}.
+ */
 export class ResourceMonitor implements IResourceMonitor {
     private _resources: Map<string, IResourceDescriptor<IAsyncDisposable>>;
     private readonly _terminalSignalHandler: ITerminationSignalHandler;
     private readonly _logger?: ILogger;
 
+    /**
+     * Creates an instance of {@link ResourceMonitor}.
+     * @param {ITerminationSignalHandler} terminalSignalHandler - The terminal signal handler to use.
+     * @param {ILogger} [logger] - The logger to use for logging (optional).
+     */
     public constructor(
         terminalSignalHandler: ITerminationSignalHandler,
         logger?: ILogger,
@@ -29,6 +38,10 @@ export class ResourceMonitor implements IResourceMonitor {
         this._logger = logger;
     }
 
+    /**
+     * Asynchronously disposes resources when termination signal is received.
+     * @returns {Promise<void>}
+     */
     private async disposeResource(): Promise<void> {
         const promises: Array<Promise<void>> = [
             ...this._resources.entries(),
@@ -70,6 +83,13 @@ export class ResourceMonitor implements IResourceMonitor {
         }
     }
 
+    /**
+     * Tries to add a resource to the monitor.
+     * @template TResource - The type of the resource extends {@link IAsyncDisposable}.
+     * @param {Constructor<TResource>} Resource - The constructor of the resource to add.
+     * @param {Resolver<TResource>} [resolver] - The resolver function for the resource (optional).
+     * @returns {boolean} True if the resource was successfully added, false otherwise.
+     */
     public tryAdd<TResource extends IAsyncDisposable>(
         Resource: Constructor<TResource>,
         resolver?: Resolver<TResource>,
@@ -88,6 +108,10 @@ export class ResourceMonitor implements IResourceMonitor {
         return true;
     }
 
+    /**
+     * Resolves all registered resources.
+     * @returns {void}
+     */
     public resolveAll(): void {
         this._resources.forEach(
             (
@@ -102,6 +126,13 @@ export class ResourceMonitor implements IResourceMonitor {
         );
     }
 
+    /**
+     * Gets the instance of the specified resource.
+     * @template TResource - The type of the resource to retrieve.
+     * @param {Constructor<TResource>} Resource - The constructor of the resource to retrieve.
+     * @returns {TResource} The instance of the resource.
+     * @throws {Error} if the resource is not found.
+     */
     public getResource<TResource extends IAsyncDisposable>(
         Resource: Constructor<TResource>,
     ): TResource {

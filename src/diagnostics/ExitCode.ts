@@ -1,4 +1,5 @@
 /**
+ * @enum
  * Enum representing exit codes for different termination signals.
  * @see https://linuxconfig.org/list-of-exit-codes-on-linux
  * @enum {number}
