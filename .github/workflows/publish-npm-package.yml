@@ -1,67 +1,77 @@
-name: publish npm package
+name: publish-npm-package
 
 on:
-  release:
-    types:
-      - edited
-      - released
+    release:
+        types:
+            - edited
+            - released
 
 jobs:
-  publish-npm-package:
-    runs-on: ubuntu-latest
+    publish-npm-package:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
-        name: checkout
+        steps:
+            # execute source code checkout
+            -   uses: actions/checkout@v3
+                name: checkout
 
-      - uses: jannemattila/get-version-from-tag@v3
-        name: get tag version
-        id: tag_version
+            # install nodejs version 20.11.1
+            -   uses: actions/setup-node@v3
+                name: install Node.js (20.11.1)
+                with:
+                    node-version: 20.11.1
 
-      - name: configure npm to not create git tag
-        run: npm config set git-tag-version false
+            # install PNPM version 8.15.5
+            -   uses: pnpm/action-setup@v3
+                name: install pnpm
+                with:
+                    version: 8.15.5
+                    run_install: false
 
-      - name: create .npmrc
-        shell: bash
-        run: |
-            echo "git-tag-version=false" >> .npmrc
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+            # get the pnpm store path
+            -   name: get pnpm store directory
+                shell: bash
+                run: |
+                    echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - name: set tag into package.json
-        run: npm version ${{ steps.tag_version.outputs.version }}
+            # create cache keys
+            -   uses: actions/cache@v3
+                name: setup pnpm cache
+                with:
+                    path: ${{ env.STORE_PATH }}
+                    key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                    restore-keys: |
+                        ${{ runner.os }}-pnpm-store-
 
-      - uses: actions/setup-node@v3
-        name: install Node.js (20.11.1)
-        with:
-          node-version: 20.11.1
+            # get the release tag to use as package version
+            -   uses: jannemattila/get-version-from-tag@v3
+                id: tag_version
+                name: get tag version to use as package version
 
-      - uses: pnpm/action-setup@v3
-        name: install pnpm
-        with:
-          version: 8.15.5
-          run_install: false
+            # create .npmrc
+            -   shell: bash
+                name: create .npmrc
+                run: |
+                    echo "git-tag-version=false" >> .npmrc
+                    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
 
-      - name: get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+            # set version tag into package json
+            -   name: set version tag into package json
+                run: npm version ${{ steps.tag_version.outputs.version }}
 
-      - uses: actions/cache@v3
-        name: setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            # install dependencies in production context
+            -   name: install dependencies
+                run: pnpm install --frozen-lockfile
 
-      - name: install dependencies
-        run: pnpm install --frozen-lockfile
+            # build dist to use as package
+            -   name: build dist
+                run: pnpm build
 
-      - name: build
-        run: pnpm build
-
-      - name: publish NPM package
-        run: pnpm publish --no-git-checks --access public
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+            # publish NPM package
+            -   shell: bash
+                name: publish NPM package
+                run: |
+                    cd dist
+                    npm publish
+                env:
+                    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

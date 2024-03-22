@@ -1,0 +1,50 @@
+name: code-integrity
+
+on:
+    - push
+    - pull_request
+
+jobs:
+    code-integrity:
+        runs-on: ubuntu-latest
+
+        steps:
+            # execute source code checkout
+            -   uses: actions/checkout@v3
+                name: checkout
+
+            # install nodejs version 20.11.1
+            -   uses: actions/setup-node@v3
+                name: install Node.js (20.11.1)
+                with:
+                    node-version: 20.11.1
+
+            # install PNPM version 8.15.5
+            -   uses: pnpm/action-setup@v3
+                name: install pnpm
+                with:
+                    version: 8.15.5
+                    run_install: false
+
+            # get the pnpm store path
+            -   name: get pnpm store directory
+                shell: bash
+                run: |
+                    echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+            # create cache keys
+            -   uses: actions/cache@v3
+                name: setup pnpm cache
+                with:
+                    path: ${{ env.STORE_PATH }}
+                    key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                    restore-keys: |
+                        ${{ runner.os }}-pnpm-store-
+
+            # install dependencies
+            -   name: install dependencies
+                run: pnpm install
+
+            # build and run tests
+            -   name: build and run tests
+                run: pnpm test

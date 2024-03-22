@@ -59,6 +59,13 @@ execute_audit() {
 execute_build() {
     execute_clean
     tsc -p "$TSCONFIG_BUILD" && tsc-alias -p "$TSCONFIG_BUILD"
+    cp "${BASE_PATH}/.npmrc" "${DIST_PATH}"
+    cp "${BASE_PATH}/package.json" "${DIST_PATH}"
+    cd "${DIST_PATH}"
+    npm pkg delete scripts
+    npm pkg delete devDependencies
+    npm pkg delete engines
+    cd "${BASE_PATH}"
 }
 
 execute_clean_dist() {
@@ -116,38 +123,32 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --audit-deps)
             execute_audit
-            #shift 2
             break
         ;;
 
         --build)
             execute_build
-            #shift 2
             break
         ;;
 
         --clean)
             execute_clean
-            #shift 2
             break
         ;;
 
         --depcheck)
             execute_depcheck
-            #shift 2
             break
         ;;
 
         --lint)
             execute_lint
-            #shift 2
             break
         ;;
 
         --prepare)
             husky install
             husky set .husky/pre-commit 'pnpm pre-commit'
-            #shift 2
             break
         ;;
 
@@ -159,7 +160,6 @@ while [[ $# -gt 0 ]]; do
             execute_depcheck
             execute_build
             execute_test
-            #shift 2
             break
         ;;
 
@@ -167,7 +167,6 @@ while [[ $# -gt 0 ]]; do
             export TZ=UTC
             export NODE_ENV=development
             execute_test
-            #shift 2
             break
         ;;
 

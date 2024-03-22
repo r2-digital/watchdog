@@ -1,6 +1,6 @@
 {
     "name": "@r2-digital/watchdog",
-    "version": "0.0.1-beta.2",
+    "version": "1.0.0",
     "description": "A simple instance container for TypeScript",
     "license": "Apache-2.0",
     "repository": {
@@ -11,9 +11,7 @@
         "r2-digital",
         "watchdog"
     ],
-    "files": [
-        "dist"
-    ],
+    "main": "index.js",
     "engines": {
         "node": ">= 20.11.1",
         "pnpm": ">= 8.15.5",
