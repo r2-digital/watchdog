@@ -54,8 +54,6 @@ jobs:
                 name: apply new version
                 run: |
                     npm version ${{ steps.get_version.outputs.version }}
-                env:
-                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             # install dependencies in production context
             -   name: install dependencies
