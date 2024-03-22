@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "@tsconfig/node21/tsconfig.json",
+    "compileOnSave": true,
+    "include": ["src/**/*", "tests/**/*"],
+    "compilerOptions": {
+        "types": ["node", "jest"],
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "paths": {
+            "@watchdog": ["src/"],
+            "@test-assets": ["tests/assets"],
+            "@watchdog/*": ["src/*"],
+            "@test-assets/*": ["tests/assets/*"]
+        }
+    }
+}

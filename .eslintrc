@@ -1,0 +1,14 @@
+{
+    "extends": "@r2-digital",
+    "rules": {
+        "import/no-cycle": "off",
+        "object-curly-newline": ["error", {
+            "ObjectExpression": "always",
+            "ObjectPattern": { "multiline": true },
+            "ImportDeclaration": { "multiline": true },
+            "ExportDeclaration": { "multiline": true }
+        }],
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"]
+    }
+}

@@ -1,0 +1,13 @@
+skip-missing: true
+ignores: [
+    "@faker-js/faker",
+    "depcheck",
+    "husky",
+    "nock",
+    "promise-events",
+    "rimraf",
+    "ts-jest",
+    "ts-node-dev",
+    "tsc-alias",
+    "tsconfig-paths"
+]

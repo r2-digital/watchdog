@@ -1,0 +1,48 @@
+{
+    "name": "@r2-digital/watchdog",
+    "version": "1.0.0",
+    "description": "A simple instance container for TypeScript",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/r2-digital/watchdog.git"
+    },
+    "keywords": [
+        "r2-digital",
+        "watchdog"
+    ],
+    "engines": {
+        "node": ">= 20.11.1",
+        "pnpm": ">= 8.15.5",
+        "npm": "please-use-pnpm",
+        "yarn": "please-use-pnpm"
+    },
+    "scripts": {
+        "audit-deps": "./commands.sh --audit-deps",
+        "build": "./commands.sh --build",
+        "clean": "./commands.sh --clean",
+        "depcheck": "./commands.sh --depcheck",
+        "lint": "./commands.sh --lint",
+        "prepare": "./commands.sh --prepare",
+        "pre-commit": "./commands.sh --pre-commit",
+        "test": "./commands.sh --test",
+        "?": "./commands.sh --usage"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^8.4.1",
+        "@r2-digital/eslint-config": "^1.0.3",
+        "@tsconfig/node21": "^21.0.1",
+        "@types/jest": "^29.5.12",
+        "@types/node": "^20.11.30",
+        "depcheck": "^1.4.7",
+        "husky": "8.0.3",
+        "jest": "^29.7.0",
+        "promise-events": "^0.2.4",
+        "rimraf": "^5.0.5",
+        "ts-jest": "^29.1.2",
+        "ts-node-dev": "^2.0.0",
+        "tsc-alias": "^1.8.8",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "5.3.3"
+    }
+}
