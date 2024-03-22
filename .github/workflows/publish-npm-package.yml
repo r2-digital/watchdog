@@ -20,7 +20,7 @@ jobs:
 
       - name: configure npm to not create git tag
         run: npm config set git-tag-version false
-      
+
       - name: set tag into package.json
         run: npm version ${{ steps.tag_version.outputs.version }}
 
@@ -49,13 +49,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: build
         run: pnpm build
 
       - name: publish NPM package
-        run: npm publish
+        run: pnpm publish --no-git-checks --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
