@@ -1,0 +1,61 @@
+name: publish npm package
+
+on:
+  release:
+    types:
+      - edited
+      - released
+
+jobs:
+  publish-npm-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        name: checkout
+
+      - uses: jannemattila/get-version-from-tag@v3
+        name: get tag version
+        id: tag_version
+
+      - name: configure npm to not create git tag
+        run: npm config set git-tag-version false
+      
+      - name: set tag into package.json
+        run: npm version ${{ steps.tag_version.outputs.version }}
+
+      - uses: actions/setup-node@v3
+        name: install Node.js (20.11.1)
+        with:
+          node-version: 20.11.1
+
+      - uses: pnpm/action-setup@v3
+        name: install pnpm
+        with:
+          version: 8.15.5
+          run_install: false
+
+      - name: get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: build
+        run: pnpm build
+
+      - name: publish NPM package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
