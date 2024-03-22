@@ -59,7 +59,7 @@ jobs:
 
             # apply new version
             -   shell: bash
-                name: publish NPM package
+                name: apply new version
                 run: |
                     npm version ${{ steps.get_version.outputs.version }}
                 env:
