@@ -44,22 +44,6 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-pnpm-store-
 
-            # get the release tag to use as package version
-            -   uses: jannemattila/get-version-from-tag@v3
-                id: tag_version
-                name: get tag version to use as package version
-
-            # create .npmrc
-#            -   shell: bash
-#                name: create .npmrc
-#                run: |
-#                    echo "git-tag-version=false" >> .npmrc
-#                    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
-
-            # set version tag into package json
-#            -   name: set version tag into package json
-#                run: npm version ${{ steps.tag_version.outputs.version }}
-
             # install dependencies in production context
             -   name: install dependencies
                 run: pnpm install --frozen-lockfile
@@ -68,12 +52,17 @@ jobs:
             -   name: build dist
                 run: pnpm build
 
+            # get the release tag to use as package version
+            -   uses: jannemattila/get-version-from-tag@v3
+                id: NPM_TAG
+                name: get tag version to use as package version
+
             # publish NPM package
             -   shell: bash
                 name: publish NPM package
                 run: |
                     cd dist
+                    npm version ${{ steps.NPM_TAG.outputs.version }}
                     npm publish
                 env:
-                    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
                     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
