@@ -10,7 +10,7 @@ npm i @r2-digital/watchdog
 watchdog is a lightweight and versatile instance container designed specifically for TypeScript projects
 
 ### documentation
-We provide comprehensive documentation located in the [/docs](./docs/index.html) directory.
+We provide comprehensive documentation located in the [/docs](https://r2-digital.github.io/watchdog) directory.
 
 ### motivation
 * code organization
@@ -21,3 +21,4 @@ We provide comprehensive documentation located in the [/docs](./docs/index.html)
 
 ### links
 * [npmjs of @r2-digital](https://www.npmjs.com/package/@r2-digital/watchdog)
+* [documentation](https://r2-digital.github.io/watchdog)
